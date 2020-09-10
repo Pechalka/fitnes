@@ -1,18 +1,22 @@
-import * as React from 'react';
-import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
+import React, { useState } from 'react';
+
+import { View, Text, TouchableOpacity, ScrollView, Button, TextInput } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+
+import { createStackNavigator } from '@react-navigation/stack';
+
 
 import configureStore from './redux/configureStore'
 import { Provider } from 'react-redux'
 
 import TabBar from './TabBar'
-import WorkoutsScreen from './WorkoutsScreen'
+
 import ExercisesScreen from './ExercisesScreen'
+import WorkoutsScreen from './WorkoutsScreen'
 
 
 const Tab = createBottomTabNavigator();
-
 const store = configureStore();
 
 export default function App() {

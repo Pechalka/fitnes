@@ -1,28 +1,155 @@
 
 const initState = {
 	exercises: [
-		{id: 1, name: 'Жим штанги'},
-		{id: 2, name: 'Упражнение 1'},
-		{id: 3, name: 'Упражнение 2'},
-		{id: 4, name: 'Упражнение 3'},
-		{id: 5, name: 'Упражнение 4'}
+		{id: 1, name: 'Тяга шт к подб'},
+		{id: 2, name: 'Жим в тр-ре'},
+		{id: 3, name: 'Жим в смите'},
+		{id: 4, name: 'Кросовер стоя'},
+		{id: 5, name: 'Отжимания от лавки'},
+		{id: 6, name: 'Тяга блока снизу'},
+		{id: 7, name: 'Тяга шт в накл'},
+		{id: 8, name: 'Тяга блока за голову'},
+		{id: 9, name: 'Подем на биз Молоток'},
+		{id: 10, name: 'Гиперэстенция'},
 	],
 	workouts: [
 		{
-			id: 2,
-			name: '10.07.20',
+			id: 1,
+			name: '01.09.20',
 			exercises: [
 				{
-					id:1,
-					count: 3,
-					weight: 10
+					id:6,
+					count: -1,
+					weight: 23
+				},
+				{
+					id:6,
+					count: -1,
+					weight: 23
+				},
+				{
+					id:6,
+					count: -1,
+					weight: 23
+				},
+				{
+					id:7,
+					count: -1,
+					weight: 15
+				},
+				{
+					id:7,
+					count: -1,
+					weight: 15
+				},
+				{
+					id:7,
+					count: -1,
+					weight: 15
+				},
+				{
+					id:8,
+					count: -1,
+					weight: 30
+				},
+				{
+					id:8,
+					count: -1,
+					weight: 30
+				},
+				{
+					id:8,
+					count: -1,
+					weight: 30
+				},
+				{
+					id:9,
+					count: -1,
+					weight: 5
+				},
+				{
+					id:9,
+					count: -1,
+					weight: 5
+				},
+				{
+					id:9,
+					count: -1,
+					weight: 5
+				},
+				{
+					id:10,
+					count: -1,
+					weight: 2.5
+				},
+				{
+					id:10,
+					count: -1,
+					weight: 2.5
+				},
+				{
+					id:10,
+					count: -1,
+					weight: 2.5
 				}
+
 			]
 		},
 		{
 			id: 3,
-			name: '12.07.20',
-			exercises: []
+			name: '08.09.20',
+			exercises: [
+				{
+					id:2,
+					count: 1,
+					weight: 25
+				},
+				{
+					id:3,
+					count: 1,
+					weight: 1
+				},
+				{
+					id:4,
+					count: 20,
+					weight: 13
+				},
+				{
+					id:4,
+					count: 20,
+					weight: 13
+				},
+				{
+					id:1,
+					count: -1,
+					weight: 15
+				},
+				{
+					id:1,
+					count: -1,
+					weight: 15
+				},
+				{
+					id:1,
+					count: -1,
+					weight: 15
+				},
+				{
+					id:5,
+					count: -1,
+					weight: 0
+				},
+				{
+					id:5,
+					count: -1,
+					weight: 0
+				},
+				{
+					id:5,
+					count: -1,
+					weight: 0
+				}
+			]
 		}
 	],
 }
