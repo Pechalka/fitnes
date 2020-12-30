@@ -1,69 +1,21 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, TextInput } from 'react-native';
-import connect from './connect'
+import React, { useState, useLayoutEffect } from 'react';
+import { createStackNavigator } from '@react-navigation/stack';
 
-import { Button } from '../Components'
+import List from './List'
 
+const ExercisesStack = createStackNavigator()
 
-const ExercisesScreen = (props) => {
-  const { addExercise, exercises } = props;
-
-  const [name, setName] = useState('')
-
-  const [showAdd, setShowAdd] = useState(false)
-
-  const showAddScreen = () => {
-    setShowAdd(true)
-  }
-
-  const saveExercise = () => {
-    setShowAdd(false)
-    setName('')
-    addExercise(name)
-  }
-
-  const cancel = () => {
-    setShowAdd(false)
-    setName('')
-  }
-
-  if (showAdd) {
-    return (
-      <View style={{ flex: 1, paddingTop: 100, marginLeft: 20, marginRight: 20  }}>
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingBottom: 20 }}>
-          <Button onPress={saveExercise} label='Сохранить'/>
-          <Button onPress={cancel} label='Отмена'/>        
-        </View>
-
-        <Text>Название</Text>
-        <TextInput
-          style={{ height: 40, borderColor: 'gray', borderWidth: 1, width: '100%' }}
-          onChangeText={text => setName(text)}
-          value={name}
-        />
-      </View>
-    );    
-  }
-
-  const exercisesConent = exercises.map((exercise) => {
-    return (
-      <View key={exercise.id}>
-        <Text>{exercise.name}</Text>
-      </View>
-    )
-  })
-
+const ExercisesScreen = () => {
   return (
-    <View style={{ flex: 1, paddingTop: 100, marginLeft: 20, marginRight: 20 }}>
-      <View style={{ flexDirection: 'row'}}>
-        <Button onPress={showAddScreen} label='Добавить упражнение' />
-      </View>
-      <ScrollView style={{  flex: 1 , width: '100%', marginTop: 20 }}>
-        {exercisesConent}
-      </ScrollView>
-    </View>
-  );
-
+    <ExercisesStack.Navigator>
+      <ExercisesStack.Screen name='list' component={List} options={{ title: 'список тренировак' }}/>
+    </ExercisesStack.Navigator>
+  )
 }
 
-export default connect(ExercisesScreen)
+export default ExercisesScreen
+
+
+
+
+

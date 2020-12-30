@@ -32,7 +32,7 @@ const NewSet = ({ navigation, title, count, weight, exerciseId, workoutId, ...pr
   }, [title, selectedCount, selectedWeigth, exerciseId, workoutId])
 
 
-  const items = Array.from({length: 40}, (_, i) => i + 1).concat([-1]).map((n) => {
+  const items = Array.from({length: 100}, (_, i) => i + 1).concat([-1]).map((n) => {
     return (
       <Picker.Item label={n === -1 ? 'max' : n+''} value={n} />
     )
@@ -46,7 +46,7 @@ const NewSet = ({ navigation, title, count, weight, exerciseId, workoutId, ...pr
         <Text>Вес</Text>
         <Picker
           selectedValue={selectedWeigth}
-          style={{ height: 100, overflow: 'hidden', weight: '50%' }}
+          style={{ height: 300, overflow: 'hidden', weight: '50%' }}
           onValueChange={(itemValue, itemIndex) => setSelectedWeigth(itemValue)}
         >
           {items}
@@ -54,7 +54,7 @@ const NewSet = ({ navigation, title, count, weight, exerciseId, workoutId, ...pr
         <Text>Количество</Text>
         <Picker
           selectedValue={selectedCount}
-          style={{ height: 100, overflow: 'hidden', weight: '50%' }}
+          style={{ height: 300, overflow: 'hidden', weight: '50%' }}
           onValueChange={(itemValue, itemIndex) => setSelectedCount(itemValue)}
         >
           {items}
@@ -73,11 +73,21 @@ export default connect(
     // const name = workout ? workout.name : '-'
 
      const workout = state.workouts.find((x) => x.id === +workoutId)
-     const exercises = workout.exercises.filter(x => x.id === +exerciseId)
+     // const exercises = workout.exercises.filter(x => x.id === +exerciseId)
 
-     const exercise = exercises[exercises.length -1 ]
+     // const exercise = exercises[exercises.length -1 ]
 
-     const { count = 1, weight = 1  } = exercise
+     let count = 1
+     let weight = 1
+
+     const exercises = workout.exercises[exerciseId]
+
+     if (exercises.length > 0) {
+       const exercise = exercises[exercises.length -1]
+       count = exercise.count
+       weight = exercise.weight
+     }
+
 
      const e = state.exercises.find(x => x.id === +exerciseId)
 

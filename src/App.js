@@ -8,6 +8,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 
 import configureStore from './redux/configureStore'
+import { restoreState } from './redux/main'
 import { Provider } from 'react-redux'
 
 import TabBar from './TabBar'
@@ -31,3 +32,5 @@ export default function App() {
     </Provider>
   );
 }
+
+store.dispatch(restoreState())

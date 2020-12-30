@@ -10,7 +10,7 @@ const DetailsWorkout = ({ navigation, route, name, items, workoutId }) => {
         <Button onPress={() => navigation.navigate('list')} title="Все тренировки" />
       ),
       headerRight: () => (
-        <Button onPress={() => navigation.navigate('NewExercise', { id: workoutId })} title="Упражнение" />
+        <Button onPress={() => navigation.navigate('NewExercise', { id: workoutId })} title="Новое упражнение" />
       ),
       headerTitle: () => {
       	return (
@@ -41,7 +41,7 @@ const DetailsWorkout = ({ navigation, route, name, items, workoutId }) => {
       return (
         <View key={item.id} style={{  paddingTop: 20, borderBottomColor: '#000',
         borderBottomWidth: 2 }}>
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingBottom: 20 }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingBottom: 20 }}>
             <Text style={{ fontSize: 16 }}>{item.name}</Text>
             <Button title="Добавить подход" onPress={() => showNewSet(item.id)}/>
           </View>
@@ -54,7 +54,9 @@ const DetailsWorkout = ({ navigation, route, name, items, workoutId }) => {
   return (
   	<View style={{ flex: 1, paddingTop: 20, marginLeft: 20, marginRight: 0  }}>
     <ScrollView style={{ paddingRight: 20  }}>
-      {exercisesContent}
+      {items.length > 0 ? exercisesContent : <View>
+        <Text>В этой тренеровке пока нету упражнений</Text>
+      </View>}
     </ScrollView>
     </View>
   )
@@ -69,28 +71,27 @@ export default connect(
 		const name = workout ? workout.name : '-'
 		const workoutId = workout ? workout.id : -1 
 	    
-	    const groups = {}
+     let items = []
 
-	    workout.exercises.forEach((set) => {
-	      if (!groups[set.id]) {
-	        const name = state.exercises.find(x => x.id === set.id).name
-	        groups[set.id] = {
-	          id: set.id,
-	          name,
-	          sets: [
-	            set
-	          ]
-	        }        
-	      } else {
-	        groups[set.id].sets = groups[set.id].sets.concat(set)
-	      }
-	    })
+     if (workout) {
+       items = Object.keys(workout.exercises).reduce((acc, key) => {
+         const e = state.exercises.find(x => x.id === +key)
+         if (e) {
+           const newItem = {
+             id: +key,
+             name: e.name,
+             sets: workout.exercises[key]
+           }
+           return acc.concat(newItem)           
+         }
 
-	    const items = Object.keys(groups).map((key) => groups[key])
+         return acc
+       }, [])
+     }
+
 
 		return {
 			name,
-			groups,
 			items,
 			workoutId,
 		}

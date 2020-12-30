@@ -1,8 +1,8 @@
 import { connect } from 'react-redux'
 
-import { addExercise } from '../redux/main'
+import { addExercise, removeExercise } from '../redux/main'
 
 
 export default connect((state) => ({
 	exercises: state.exercises
-}), { addExercise })
+}), { addExercise, removeExercise })
