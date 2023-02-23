@@ -1,33 +1,89 @@
-import React, { useState } from 'react';
-import { createStackNavigator } from '@react-navigation/stack';
+import React, {useState} from 'react';
+import {createStackNavigator, HeaderBackButton} from '@react-navigation/stack';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  ScrollView,
+  Button,
+  TextInput,
+} from 'react-native';
 
-import ListWorkouts from './ListWorkouts.js'
-import DetailsWorkout from './DetailsWorkout'
-import AddWorkout from './AddWorkout'
-import NewExercise from './NewExercise.js'
-import NewSet from './NewSet'
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+const Tab = createBottomTabNavigator();
+import TabBar from '../Components/TabBar';
 
+import ListWorkouts from '../Calendar/ListWorkoutsScreen.js';
 
-const WorkoutStack = createStackNavigator()
+// import MessagesScreen from '../MessagesScreen';
+import ProfileScreen from '../ProfileScreen';
+import StatisticData from '../Statistic/StatisticData.js';
+import StatisticDataDetails from '../Statistic/StatisticDataDetails.js';
 
+const WorkoutStack = createStackNavigator();
 
-const WorkoutsScreen = ({ navigation }) => {
+import {Calendar, CalendarList, Agenda} from 'react-native-calendars';
+
+const ProfileStack = createStackNavigator();
+
+const StatisticScreen = () => {
   return (
-    <WorkoutStack.Navigator>
-      <WorkoutStack.Screen name="list" component={ListWorkouts} 
-        options={{ 
-          title: ''
-        }} 
+    <ProfileStack.Navigator initialRouteName="statistic-list">
+      <ProfileStack.Screen
+        name="statistic-list"
+        component={StatisticData}
+        options={{
+          title: 'Статистика',
+          headerBackVisible: false,
+          headerLeft: () => null,
+        }}
       />
-      <WorkoutStack.Screen name="add" component={AddWorkout} options={{ title: 'Новая тренировка' }}/>
-      <WorkoutStack.Screen name="details" component={DetailsWorkout} options={{ title: '' }}/>
-      <WorkoutStack.Screen name="NewExercise" component={NewExercise} options={{ title: '' }}/>
-      <WorkoutStack.Screen name="NewSet" component={NewSet} options={{ title: '' }}/>
-    </WorkoutStack.Navigator>
-  )
-}
+      <ProfileStack.Screen
+        name="statistic-details"
+        component={StatisticDataDetails}
+        options={{
+          title: '??',
+          // headerBackVisible: false,
+          // headerLeft: () => null,
+          headerLeft: (props) => {
+            return <HeaderBackButton {...props} labelVisible={false} />;
+          },
+        }}
+      />
+    </ProfileStack.Navigator>
+  );
+};
 
+const WorkoutsScreen = ({navigation}) => {
+  return (
+    <Tab.Navigator tabBar={(props) => <TabBar {...props} />}>
+      <Tab.Screen
+        name="list"
+        component={ListWorkouts}
+        options={{
+          tabBarLabel: 'Тренировки',
+          icon: 'home',
+          headerLeft: () => null,
+          headerBackVisible: false,
+        }}
+      />
+      <Tab.Screen
+        name="Profile"
+        component={ProfileScreen}
+        options={{
+          title: 'Профиль',
+          icon: 'contacts',
+          headerLeft: () => null,
+          headerBackVisible: false,
+        }}
+      />
+      <Tab.Screen
+        name="statistic"
+        component={StatisticScreen}
+        options={{title: 'Статистика', icon: 'linechart', headerShown: true}}
+      />
+    </Tab.Navigator>
+  );
+};
 
-
-
-export default WorkoutsScreen
+export default WorkoutsScreen;

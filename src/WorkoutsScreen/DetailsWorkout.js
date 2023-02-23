@@ -1,99 +1,157 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, Button, TextInput } from 'react-native';
-import { connect } from 'react-redux'
+import React, {
+  useMemo,
+  Fragment,
+  useEffect,
+  useState,
+  useLayoutEffect,
+} from 'react';
+import {
+  View,
+  Text,
+  ScrollView,
+  TextInput,
+  TouchableOpacity,
+} from 'react-native';
+import YouTube from 'react-native-youtube';
 
-const DetailsWorkout = ({ navigation, route, name, items, workoutId }) => {
+import Icon from 'react-native-vector-icons/AntDesign';
+import MaterialCommunityIconsIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-  React.useLayoutEffect(() => {
-    navigation.setOptions({
-      headerLeft: () => (
-        <Button onPress={() => navigation.navigate('list')} title="Все тренировки" />
-      ),
-      headerRight: () => (
-        <Button onPress={() => navigation.navigate('NewExercise', { id: workoutId })} title="Новое упражнение" />
-      ),
-      headerTitle: () => {
-      	return (
-      		<View>
-      			<Text style={{ textAlign: 'center' }}>{name}</Text>
-      		</View>
-      	)
+import {
+  loadResults,
+  updateResult,
+  updateReps,
+  updateWeight,
+  updateTime,
+  getSets,
+  getWorkouts,
+} from '../redux/main';
+import {useActions} from '../hooks';
+import {useSelector} from 'react-redux';
+
+import {useNavigation, useRoute} from '@react-navigation/native';
+
+import Sets from './Sets';
+import SetNavigation from './SetNavigation';
+import Navigation from './Navigation';
+
+const DetailsWorkout = ({navigation, route}) => {
+  const actions = useActions({loadResults}, []);
+
+  const {
+    params: {id, date},
+  } = route;
+
+  const exercises = useSelector(getWorkouts)[date];
+  const {isLoading} = useSelector(getSets);
+
+  const exercise = exercises.find((x) => x.id === +id);
+
+  const setExercises = exercises.filter(
+    (x) =>
+      (x.setName !== 'none' && x.setName === exercise.setName) ||
+      x.id === exercise.id,
+  );
+
+  useEffect(() => {
+    actions.loadResults(setExercises, date);
+  }, []);
+
+  const [videoId, setVideoId] = useState(exercise.videoId);
+
+  const handlExerciseSelect = (ex) => {
+    setVideoId(ex.videoId);
+    setExerciseId(ex.id);
+
+    if (dataSourceCords[ex.id] && ref) {
+      ref.scrollTo({
+        x: 0,
+        y: dataSourceCords[ex.id].y,
+        animated: true,
+      });
+    }
+  };
+
+  const [dataSourceCords, setDataSourceCords] = useState([]);
+  const [ref, setRef] = useState(null);
+
+  useLayoutEffect(() => {
+    if (!isLoading) {
+      setTimeout(() => {
+        // TODO: FIX ME
+        if (ref && dataSourceCords[exercise.id]) {
+          ref.scrollTo({
+            x: 0,
+            y: dataSourceCords[exercise.id].y,
+            animated: true,
+          });
+        }
+      }, 1000);
+    }
+  }, [isLoading]);
+
+  const [exerciseId, setExerciseId] = useState(exercise.id);
+
+  const isMulti = setExercises.length > 1;
+
+  const handelScroll = (event) => {
+    const offsetY = event.nativeEvent.contentOffset.y;
+    // console.log('offsetY ', offsetY);
+    // if ()
+    for (let key in dataSourceCords) {
+      if (dataSourceCords[key]) {
+        if (
+          offsetY > dataSourceCords[key].y &&
+          offsetY <= dataSourceCords[key].y + dataSourceCords[key].height
+        ) {
+          setExerciseId(+key);
+        }
+        // console.log('>>> ', offsetY, dataSourceCords[key]);
       }
-    });
-  }, [navigation, name, workoutId])
-
-
-  const showNewSet = (exerciseId) => {
-  	navigation.navigate('NewSet', { workoutId, exerciseId })
-  }
-
-	const exercisesContent = items.map((item) => {
-
-      const setsContent = item.sets.map((s, index) => {
-            return (
-              <View key={index} style={{ flexDirection: 'row', justifyContent: 'space-between', paddingBottom: 20 }}>
-                <Text>Вес: {s.weight}</Text>
-                <Text>Количестков: {s.count === -1 ? 'max' : s.count}</Text>
-              </View>
-            )            
-          })
-
-      return (
-        <View key={item.id} style={{  paddingTop: 20, borderBottomColor: '#000',
-        borderBottomWidth: 2 }}>
-          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingBottom: 20 }}>
-            <Text style={{ fontSize: 16 }}>{item.name}</Text>
-            <Button title="Добавить подход" onPress={() => showNewSet(item.id)}/>
-          </View>
-          {setsContent}
-        </View>
-      )
-    })
-
+    }
+  };
 
   return (
-  	<View style={{ flex: 1, paddingTop: 20, marginLeft: 20, marginRight: 0  }}>
-    <ScrollView style={{ paddingRight: 20  }}>
-      {items.length > 0 ? exercisesContent : <View>
-        <Text>В этой тренеровке пока нету упражнений</Text>
-      </View>}
-    </ScrollView>
+    <View style={{flex: 1}}>
+      <YouTube
+        videoId={videoId}
+        play={false}
+        fullscreen
+        loop
+        style={{alignSelf: 'stretch', height: 300}}
+      />
+      {isMulti ? (
+        <SetNavigation
+          setExercises={setExercises}
+          handlExerciseSelect={handlExerciseSelect}
+          exerciseId={exerciseId}
+        />
+      ) : null}
+      <ScrollView
+        ref={(ref) => setRef(ref)}
+        onScrollEndDrag={handelScroll}
+        style={{
+          backgroundColor: '#F5F5F5',
+        }}>
+        {setExercises.map((ex, index) => (
+          <Sets
+            key={ex.id}
+            exercise={ex}
+            onLayout={(event) => {
+              const layout = event.nativeEvent.layout;
+              dataSourceCords[ex.id] = {
+                y: layout.y,
+                height: layout.height,
+                index,
+              };
+              setDataSourceCords(dataSourceCords);
+            }}
+          />
+        ))}
+      </ScrollView>
+      <Navigation />
     </View>
-  )
-}
+  );
+};
 
-
-export default connect(
-	(state, props) => {
-		const { route: { params: { id } } } = props
-
-		const workout = state.workouts.find((x) => x.id === id)
-		const name = workout ? workout.name : '-'
-		const workoutId = workout ? workout.id : -1 
-	    
-     let items = []
-
-     if (workout) {
-       items = Object.keys(workout.exercises).reduce((acc, key) => {
-         const e = state.exercises.find(x => x.id === +key)
-         if (e) {
-           const newItem = {
-             id: +key,
-             name: e.name,
-             sets: workout.exercises[key]
-           }
-           return acc.concat(newItem)           
-         }
-
-         return acc
-       }, [])
-     }
-
-
-		return {
-			name,
-			items,
-			workoutId,
-		}
-	}
-)(DetailsWorkout)
+export default DetailsWorkout;

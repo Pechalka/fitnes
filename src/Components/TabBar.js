@@ -1,11 +1,13 @@
 import * as React from 'react';
-import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
+import {View, Text, TouchableOpacity, ScrollView} from 'react-native';
 
-function TabBar({ state, descriptors, navigation }) {
+import Icon from 'react-native-vector-icons/AntDesign';
+
+function TabBar({state, descriptors, navigation}) {
   return (
-    <View style={{ flexDirection: 'row' }}>
+    <View style={{flexDirection: 'row'}}>
       {state.routes.map((route, index) => {
-        const { options } = descriptors[route.key];
+        const {options} = descriptors[route.key];
         const label =
           options.tabBarLabel !== undefined
             ? options.tabBarLabel
@@ -33,6 +35,13 @@ function TabBar({ state, descriptors, navigation }) {
           });
         };
 
+        //dumbbell
+        {
+          /* name="caretright"
+                  size={30}
+                  color="#fff"*/
+        }
+
         return (
           <TouchableOpacity
             key={route.key}
@@ -42,9 +51,23 @@ function TabBar({ state, descriptors, navigation }) {
             testID={options.tabBarTestID}
             onPress={onPress}
             onLongPress={onLongPress}
-            style={{ flex: 1, height: 100, justifyContent: 'center', alignItems: 'center' }}
-          >
-            <Text style={{ color: isFocused ? '#673ab7' : '#222' }}>
+            style={{
+              flex: 1,
+              height: 100,
+              justifyContent: 'center',
+              alignItems: 'center',
+              borderTopWidth: 1,
+              borderTopColor: '#9F9D9D',
+              backgroundColor: '#2B2B2B',
+            }}>
+            {options.icon && (
+              <Icon
+                name={options.icon}
+                style={{color: isFocused ? '#FF7800' : '#9F9D9D'}}
+                size={20}
+              />
+            )}
+            <Text style={{color: isFocused ? '#FF7800' : '#9F9D9D'}}>
               {label}
             </Text>
           </TouchableOpacity>
@@ -54,4 +77,4 @@ function TabBar({ state, descriptors, navigation }) {
   );
 }
 
-export default TabBar
+export default TabBar;
