@@ -23,7 +23,6 @@ const StatisticData = ({navigation}) => {
   // const {params} = route;
 
   const route = useRoute();
-
   const [search, setSearch] = useState(false);
 
   // const a = navigation.getParam('exerciseId');
