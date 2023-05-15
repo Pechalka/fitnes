@@ -6,7 +6,11 @@ import {
   ScrollView,
   // Button,
   TextInput,
+  KeyboardAvoidingView,
+  TouchableWithoutFeedback,
+  Keyboard,
 } from 'react-native';
+import {SafeAreaView, SafeAreaProvider} from 'react-native-safe-area-context';
 
 import {Button} from '../Components';
 
@@ -14,6 +18,7 @@ import {login} from '../redux/main';
 import {useActions} from '../hooks';
 
 import Logo from './Logo2';
+import Icon from 'react-native-vector-icons/AntDesign';
 
 const LoginByEmailScreen = ({navigation}) => {
   const [email, onChangeEmail] = useState('');
@@ -35,7 +40,21 @@ const LoginByEmailScreen = ({navigation}) => {
 
   return (
     <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+      <Icon
+        name="right"
+        style={{
+          color: '#2B2B2B',
+          position: 'absolute',
+          top: 60,
+          right: 20,
+        }}
+        size={30}
+        onPress={() => {
+          navigation.goBack();
+        }}
+      />
       <Logo />
+
       <View style={{width: '70%', paddingBottom: 15}}>
         <TextInput
           style={{
@@ -53,6 +72,7 @@ const LoginByEmailScreen = ({navigation}) => {
           value={email}
           placeholder="email"
         />
+
         <TextInput
           style={{
             borderRadius: 10,

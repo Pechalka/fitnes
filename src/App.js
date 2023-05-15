@@ -1,6 +1,12 @@
 import React from 'react';
 
-import {View, Text} from 'react-native';
+import {
+  View,
+  Text,
+  KeyboardAvoidingView,
+  TouchableWithoutFeedback,
+  Keyboard,
+} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 
 import {createStackNavigator} from '@react-navigation/stack';
@@ -8,6 +14,7 @@ import {createStackNavigator} from '@react-navigation/stack';
 import configureStore from './redux/configureStore';
 import {restoreState, getAppState} from './redux/main';
 import {Provider} from 'react-redux';
+import {SafeAreaView, SafeAreaProvider} from 'react-native-safe-area-context';
 
 import WorkoutsScreen from './WorkoutsScreen';
 
@@ -17,6 +24,7 @@ const RootStack = createStackNavigator();
 
 import DetailsWorkout from './WorkoutsScreen/DetailsWorkout';
 import LoginScreen from './Login/index.js';
+import StatisticDataDetails from './Statistic/StatisticDataDetails';
 
 import {useSelector} from 'react-redux';
 
@@ -59,6 +67,14 @@ const AppScreen = () => {
           component={DetailsWorkout}
           options={{headerShown: false}}
         />
+        <RootStack.Screen
+          name="statistic-details2"
+          component={StatisticDataDetails}
+          options={{
+            title: '??',
+            headerBackVisible: false,
+          }}
+        />
       </RootStack.Navigator>
     </NavigationContainer>
   );
@@ -66,9 +82,15 @@ const AppScreen = () => {
 
 export default function App() {
   return (
-    <Provider store={store}>
-      <AppScreen />
-    </Provider>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={{flex: 1}}>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <Provider store={store}>
+          <AppScreen />
+        </Provider>
+      </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
   );
 }
 

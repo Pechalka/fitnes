@@ -39,19 +39,26 @@ const StatisticDataDetails = ({navigation}) => {
     navigation.setOptions({
       title: exerciseId ? title : 'Статистика',
       headerShown: true,
-      //   headerLeft: exerciseId
-      //     ? (props) => {
-      //         return (
-      //           <HeaderBackButton
-      //             {...props}
-      //             labelVisible={false}
-      //             onPress={() => {
-      //               setExerciseId('');
-      //             }}
-      //           />
-      //         );
-      //       }
-      //     : null,
+      headerLeft: (props) => {
+        return (
+          <HeaderBackButton
+            {...props}
+            labelVisible={false}
+            onPress={() => {
+              // setExerciseId('');
+              // alert(params.date);
+              // navigation.goBack();
+              // navigation.setParams({date: null});
+              // delete route.params?.date;
+              // navigation.dangerouslyGetParent().setParams({date: null});
+
+              //              console.log(' || >> ', navigation.dangerouslyGetParent().setParams({ date: null }));
+
+              props.onPress();
+            }}
+          />
+        );
+      },
     });
   }, [navigation, exerciseId]);
 
@@ -88,8 +95,6 @@ const StatisticDataDetails = ({navigation}) => {
             marginLeft: 20,
             marginBottom: 20,
           }}>
-          {/*<Text style={{fontSize: 15}}>{item.date}</Text>*/}
-          {/*<Text style={{fontSize: 15}}>{item.results}</Text>*/}
           <View style={{justifyContent: 'center', alignItems: 'center'}}>
             <Text
               style={{
@@ -119,6 +124,7 @@ const StatisticDataDetails = ({navigation}) => {
           </View>
           <ScrollView
             persistentScrollbar={true}
+            horizontal={true}
             style={{
               backgroundColor: '#fff',
               // flex: 1,
@@ -126,104 +132,116 @@ const StatisticDataDetails = ({navigation}) => {
               minHeight: 50,
               marginLeft: 20,
               padding: 20,
+              // flexWrap: 'wrap',
+              // flexDirection: 'column',
             }}>
-            <View style={{flexDirection: 'row', marginBottom: 10}}>
-              <Text
-                style={{
-                  fontSize: 20,
-                  lineHeight: 20,
-                  fontWeight: 'bold',
-                  marginRight: 'auto',
-                }}>
-                SET
-              </Text>
-              {item.sets.map((set, n) => (
+            <View>
+              <View style={{flexDirection: 'row', marginBottom: 10}}>
                 <Text
-                  key={n}
                   style={{
                     fontSize: 20,
                     lineHeight: 20,
-                    marginRight: 20,
+                    fontWeight: 'bold',
+                    marginRight: 'auto',
+                    width: 100,
                   }}>
-                  {set}
+                  SET
                 </Text>
-              ))}
+                {item.sets.map((set, n) => (
+                  <Text
+                    key={n}
+                    style={{
+                      fontSize: 20,
+                      lineHeight: 20,
+                      marginRight: 20,
+                      width: 50,
+                    }}>
+                    {set}
+                  </Text>
+                ))}
+              </View>
+
+              {item.showWight && (
+                <View style={{flexDirection: 'row', marginBottom: 10}}>
+                  <Text
+                    style={{
+                      fontSize: 20,
+                      lineHeight: 20,
+                      fontWeight: 'bold',
+                      marginRight: 'auto',
+                      width: 100,
+                    }}>
+                    WEIGHT
+                  </Text>
+                  {item.weights.map((weight, n) => (
+                    <Text
+                      key={n}
+                      style={{
+                        fontSize: 20,
+                        lineHeight: 20,
+                        marginRight: 20,
+                        width: 50,
+                      }}>
+                      {weight}
+                    </Text>
+                  ))}
+                </View>
+              )}
+
+              {item.showReps && (
+                <View style={{flexDirection: 'row', marginBottom: 10}}>
+                  <Text
+                    style={{
+                      fontSize: 20,
+                      lineHeight: 20,
+                      fontWeight: 'bold',
+                      marginRight: 'auto',
+                      width: 100,
+                    }}>
+                    REPS
+                  </Text>
+                  {item.reps.map((rep, n) => (
+                    <Text
+                      key={n}
+                      style={{
+                        fontSize: 20,
+                        lineHeight: 20,
+                        marginRight: 20,
+                        width: 50,
+                      }}>
+                      {rep}
+                    </Text>
+                  ))}
+                </View>
+              )}
+
+              {item.showTime && (
+                <View style={{flexDirection: 'row', marginBottom: 10}}>
+                  <Text
+                    style={{
+                      fontSize: 20,
+                      lineHeight: 20,
+                      fontWeight: 'bold',
+                      marginRight: 'auto',
+                      width: 100,
+                    }}>
+                    TIME
+                  </Text>
+                  {item.times.map((time, n) => (
+                    <Text
+                      key={n}
+                      style={{
+                        fontSize: 20,
+                        lineHeight: 20,
+                        marginRight: 20,
+                        width: 50,
+                      }}>
+                      {time}
+                    </Text>
+                  ))}
+                </View>
+              )}
             </View>
-
-            {item.showWight && (
-              <View style={{flexDirection: 'row', marginBottom: 10}}>
-                <Text
-                  style={{
-                    fontSize: 20,
-                    lineHeight: 20,
-                    fontWeight: 'bold',
-                    marginRight: 'auto',
-                  }}>
-                  WEIGHT
-                </Text>
-                {item.weights.map((weight, n) => (
-                  <Text
-                    key={n}
-                    style={{
-                      fontSize: 20,
-                      lineHeight: 20,
-                      marginRight: 20,
-                    }}>
-                    {weight}
-                  </Text>
-                ))}
-              </View>
-            )}
-
-            {item.showReps && (
-              <View style={{flexDirection: 'row', marginBottom: 10}}>
-                <Text
-                  style={{
-                    fontSize: 20,
-                    lineHeight: 20,
-                    fontWeight: 'bold',
-                    marginRight: 'auto',
-                  }}>
-                  REPS
-                </Text>
-                {item.reps.map((rep, n) => (
-                  <Text
-                    key={n}
-                    style={{
-                      fontSize: 20,
-                      lineHeight: 20,
-                      marginRight: 20,
-                    }}>
-                    {rep}
-                  </Text>
-                ))}
-              </View>
-            )}
-
-            {item.showTime && (
-              <View style={{flexDirection: 'row', marginBottom: 10}}>
-                <Text
-                  style={{
-                    fontSize: 20,
-                    lineHeight: 20,
-                    fontWeight: 'bold',
-                    marginRight: 'auto',
-                  }}>
-                  TIME
-                </Text>
-                {item.times.map((time, n) => (
-                  <Text
-                    key={n}
-                    style={{
-                      fontSize: 20,
-                      lineHeight: 20,
-                      marginRight: 20,
-                    }}>
-                    {time}
-                  </Text>
-                ))}
-              </View>
-            )}
           </ScrollView>
         </View>
       ))}

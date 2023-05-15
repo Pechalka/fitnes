@@ -15,6 +15,7 @@ const ProfileScreen = () => {
           title: 'Профиль',
           headerBackVisible: false,
           headerLeft: () => null,
+          headerShown: false,
         }}
       />
     </ProfileStack.Navigator>

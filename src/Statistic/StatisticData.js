@@ -1,5 +1,11 @@
-import React, {useState} from 'react';
-import {View, Text, TouchableOpacity, ScrollView} from 'react-native';
+import React, {useState, useMemo} from 'react';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  ScrollView,
+  TextInput,
+} from 'react-native';
 
 import {useSelector} from 'react-redux';
 import {
@@ -18,6 +24,8 @@ const StatisticData = ({navigation}) => {
 
   const route = useRoute();
 
+  const [search, setSearch] = useState(false);
+
   // const a = navigation.getParam('exerciseId');
 
   // const {params} = route;
@@ -28,16 +36,23 @@ const StatisticData = ({navigation}) => {
 
   const {exercises} = useSelector(getUserStatistic);
 
-  console.log('exercises ', exercises);
-
   const actions = useActions({loadStatistic}, []);
 
   React.useEffect(() => {
-    console.log('loadStatistic ');
     actions.loadStatistic();
   }, []);
 
-  const rows = Object.entries(exercises).map(([key, item]) => (
+  const searchedItems = useMemo(() => {
+    return Object.entries(exercises).filter(([key, item]) => {
+      if (!search) {
+        return true;
+      }
+
+      return item.title.toLowerCase().indexOf(search.toLowerCase()) !== -1;
+    });
+  }, [exercises, search]);
+
+  const rows = searchedItems.map(([key, item]) => (
     <TouchableOpacity
       style={{
         marginBottom: 20,
@@ -46,29 +61,62 @@ const StatisticData = ({navigation}) => {
       }}
       onPress={() => navigation.navigate('statistic-details', {id: item.id})}
       key={item.id}>
-      <Text style={{fontSize: 15}}>{item.title}</Text>
-      <Text style={{fontSize: 15}}>
-        {item.max}({item.units})
-      </Text>
+      <Text style={{fontSize: 14}}>{item.title}</Text>
     </TouchableOpacity>
   ));
 
   return (
-    <ScrollView
-      style={{flex: 1, marginLeft: 20, marginRight: 20, marginTop: 20}}>
-      {rows.length > 0 ? (
-        rows
-      ) : (
-        <View
+    <View style={{flex: 1, marginTop: 60}}>
+      <Text
+        style={{
+          marginLeft: 30,
+          fontSize: 24,
+        }}>
+        Статистика
+      </Text>
+      <View
+        style={{
+          marginRight: 55,
+          // paddingRight: 55,
+          marginLeft: 55,
+          marginTop: 30,
+          marginBottom: 40,
+        }}>
+        <TextInput
           style={{
-            flex: 1,
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}>
-          <Text>Статистики нету</Text>
-        </View>
-      )}
-    </ScrollView>
+            fontSize: 14,
+            backgroundColor: '#A5A5A5',
+            borderColor: '#000',
+            borderWidth: 1,
+            borderRadius: 10,
+            padding: 5,
+          }}
+          onChangeText={setSearch}
+          value={search}
+        />
+      </View>
+      <ScrollView
+        style={{
+          flex: 1,
+          marginLeft: 30,
+          // marginRight: 30,
+          paddingRight: 30,
+          marginTop: 0,
+        }}>
+        {rows.length > 0 ? (
+          rows
+        ) : (
+          <View
+            style={{
+              flex: 1,
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+            <Text>Статистики нету</Text>
+          </View>
+        )}
+      </ScrollView>
+    </View>
   );
 };
 

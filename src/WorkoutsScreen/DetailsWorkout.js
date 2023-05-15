@@ -55,7 +55,7 @@ const DetailsWorkout = ({navigation, route}) => {
 
   useEffect(() => {
     actions.loadResults(setExercises, date);
-  }, []);
+  }, [id, date]);
 
   const [videoId, setVideoId] = useState(exercise.videoId);
 
@@ -70,6 +70,10 @@ const DetailsWorkout = ({navigation, route}) => {
         animated: true,
       });
     }
+    // navigation.navigate('details', {
+    //   id: ex.id,
+    //   date: date,
+    // });
   };
 
   const [dataSourceCords, setDataSourceCords] = useState([]);
@@ -92,6 +96,12 @@ const DetailsWorkout = ({navigation, route}) => {
 
   const [exerciseId, setExerciseId] = useState(exercise.id);
 
+  useEffect(() => {
+    setExerciseId(id);
+    const exercise = exercises.find((x) => x.id === +id);
+    setVideoId(exercise.videoId);
+  }, [id]);
+
   const isMulti = setExercises.length > 1;
 
   const handelScroll = (event) => {
@@ -113,13 +123,17 @@ const DetailsWorkout = ({navigation, route}) => {
 
   return (
     <View style={{flex: 1}}>
-      <YouTube
-        videoId={videoId}
-        play={false}
-        fullscreen
-        loop
-        style={{alignSelf: 'stretch', height: 300}}
-      />
+      {isLoading ? (
+        <View style={{height: 300, backgroundColor: '#000'}} />
+      ) : (
+        <YouTube
+          videoId={videoId}
+          play={false}
+          fullscreen
+          loop
+          style={{alignSelf: 'stretch', height: 300}}
+        />
+      )}
       {isMulti ? (
         <SetNavigation
           setExercises={setExercises}
@@ -137,6 +151,7 @@ const DetailsWorkout = ({navigation, route}) => {
           <Sets
             key={ex.id}
             exercise={ex}
+            isActive={ex.id === exerciseId}
             onLayout={(event) => {
               const layout = event.nativeEvent.layout;
               dataSourceCords[ex.id] = {
@@ -149,7 +164,7 @@ const DetailsWorkout = ({navigation, route}) => {
           />
         ))}
       </ScrollView>
-      <Navigation />
+      <Navigation exerciseId={exerciseId} />
     </View>
   );
 };

@@ -71,13 +71,14 @@ export const getWorkouts = (state) => {
       value.sort((a, b) => {
         // console.log('>> ', a, b);
 
-        if (sort[a.exerciseType] == sort[b.exerciseType]) {
-          if (a.setName == b.setName) {
-            return new Date(a.createdAt) > new Date(b.createdAt) ? 1 : -1;
-          }
-          return a.setName > b.setName ? 1 : -1;
-        }
-        return sort[a.exerciseType] > sort[b.exerciseType] ? 1 : -1;
+        // if (sort[a.exerciseType] == sort[b.exerciseType]) {
+        //   if (a.setName == b.setName) {
+        //     return new Date(a.createdAt) > new Date(b.createdAt) ? 1 : -1;
+        //   }
+        //   return a.setName > b.setName ? 1 : -1;
+        // }
+        // return sort[a.exerciseType] > sort[b.exerciseType] ? 1 : -1;
+        return a.order > b.order ? 1 : -1;
       });
       return {
         ...acc,
@@ -189,24 +190,31 @@ export const restoreState = () => (dispatch) => {
     .then((authStr) => {
       if (authStr) {
         const auth = JSON.parse(authStr);
-        Promise.all([
-          http.get('/api/calendarExercises?CalendarId=' + auth.calendar_id),
-          http.get('/api/users/' + auth.user_id),
-        ]).then(([calendarExercises, user]) => {
-          dispatch({
-            type: 'LOAD_CALENDAR',
-            payload: {
-              calendarExercises,
-              user,
-            },
+        http
+          .get('/api/users/' + auth.user_id)
+          .then((user) => {
+            return http
+              .get('/api/calendarExercises?CalendarId=' + user.CalendarId)
+              .then((calendarExercises) => [calendarExercises, user]);
+          })
+          .then(([calendarExercises, user]) => {
+            console.log('user ', user);
+            console.log('calendar_id ', auth.calendar_id);
+
+            dispatch({
+              type: 'LOAD_CALENDAR',
+              payload: {
+                calendarExercises,
+                user,
+              },
+            });
+            dispatch({
+              type: 'APP_LOADED',
+              payload: {
+                startScreen: 'Workouts',
+              },
+            });
           });
-          dispatch({
-            type: 'APP_LOADED',
-            payload: {
-              startScreen: 'Workouts',
-            },
-          });
-        });
       } else {
         dispatch({
           type: 'APP_LOADED',

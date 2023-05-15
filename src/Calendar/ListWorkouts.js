@@ -1,33 +1,67 @@
-import React, {useState, useMemo} from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  ScrollView,
-  Button,
-  TextInput,
-} from 'react-native';
+import React, {useState, useMemo, Fragment} from 'react';
+import {View, Text, TouchableOpacity, ScrollView} from 'react-native';
 import {connect} from 'react-redux';
 import {removeWorkout, getWorkouts} from '../redux/main';
 
 import Icon from 'react-native-vector-icons/AntDesign';
 import MaterialCommunityIconsIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import moment from 'moment';
+import 'moment/locale/ru';
+moment.locale('ru');
 
-import {Calendar, CalendarList, Agenda} from 'react-native-calendars';
+import {Agenda, LocaleConfig} from 'react-native-calendars';
 
 const colors = {
   background: 'red',
   primary: 'yellow',
 };
 
-const ListWorkouts = ({navigation, workouts, ...props}) => {
-  var d = new Date(),
-    month = '' + (d.getMonth() + 1 < 10 ? '0' : '') + (d.getMonth() + 1),
-    day = '' + (d.getDate() < 10 ? '0' : '') + d.getDate(),
-    year = d.getFullYear();
+LocaleConfig.locales.ru = {
+  monthNames: [
+    'Январь',
+    'Февраль',
+    'Март',
+    'Апрель',
+    'Май',
+    'Июнь',
+    'Июль',
+    'Август',
+    'Сентябрь',
+    'Октябрь',
+    'Ноябрь',
+    'Декабрь',
+  ],
+  monthNamesShort: [
+    'Янв',
+    'Фев',
+    'Мар',
+    'Апр',
+    'Май',
+    'Июн',
+    'Июл',
+    'Авг',
+    'Сен',
+    'Окт',
+    'Ноя',
+    'Дек',
+  ],
+  dayNames: [
+    'воскресенье',
+    'понедельник',
+    'вторник',
+    'среда',
+    'четверг',
+    'пятница',
+    'суббота',
+  ],
+  dayNamesShort: ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'],
+  today: 'Сегодня',
+};
+LocaleConfig.defaultLocale = 'ru';
 
-  const [selectedDay, setSelectedDay] = useState(`${year}-${month}-${day}`);
+const ListWorkouts = ({navigation, workouts, ...props}) => {
+  const [selectedDay, setSelectedDay] = useState(moment().format('yyyy-MM-DD'));
+  //moment().format('yyyy-MM-DD'));
 
   React.useLayoutEffect(() => {
     navigation.setOptions({
@@ -43,8 +77,6 @@ const ListWorkouts = ({navigation, workouts, ...props}) => {
       return {...acc, [item]: {marked: true}};
     }, {});
   }, [workouts]);
-
-  const days = [1, 2, 3, 4, 5, 6, 7];
 
   return (
     <View style={{flex: 1, padding: 0, paddingTop: 0}}>
@@ -75,28 +107,6 @@ const ListWorkouts = ({navigation, workouts, ...props}) => {
         }}
         // Initially selected day
         selected={selectedDay}
-        // Specify how each item should be rendered in agenda
-        // renderItem={(item, firstItemInDay) => {
-        //   return <Text>renderItem</Text>;
-        // }}
-        // // Specify how each date should be rendered. day can be undefined if the item is not first in that day
-        // renderDay={(day, item) => {
-        //   console.log('... ', day, item);
-        //   return <Text>renderDay</Text>;
-        // }}
-        // Specify how empty date content with no items should be rendered
-        // renderEmptyDate={() => {
-        //   return (
-        //     <View style={{backgroundColor: 'green', flex: 1}}>
-        //       <Text>нет тренеровки</Text>
-        //     </View>
-        //   );
-        // }}
-        // Specify how agenda knob should look like
-        // renderKnob={() => {
-        //   return <View />;
-        // }}
-        // Override inner list with a custom implemented component
         renderList={(listProps) => {
           const exercises = workouts[selectedDay];
 
@@ -144,152 +154,149 @@ const ListWorkouts = ({navigation, workouts, ...props}) => {
               );
             }
 
-            // if (true) { // TODO: ready
-            //   icon = (
-            //     <MaterialCommunityIconsIcon
-            //       name="checkbox-marked-circle"
-            //       size={30}
-            //     />
-            //   );
-            // }
-            console.log('>> ');
-            console.log(
-              'index ',
-              index,
-              index + 1 < exercises.length
-                ? exercises[index + 1].setName
-                : -100,
-            );
-
             const isFirst =
               exercises[index].setName !== 'none' &&
-              (index == 0 || exercises[index - 1].setName === 'none');
+              (index == 0 ||
+                exercises[index - 1].setName !== exercises[index].setName);
             const isLast =
               exercises[index].setName !== 'none' &&
               (index == exercises.length - 1 ||
-                exercises[index + 1].setName === 'none');
+                exercises[index + 1].setName !== exercises[index].setName);
 
             return (
-              <TouchableOpacity
-                key={data.id}
-                onPress={() =>
-                  navigation.navigate('details', {
-                    id: data.id,
-                    date: selectedDay,
-                  })
-                }
-                style={{
-                  paddingLeft: 26,
-                  paddingRight: 26,
-                  // paddingTop: 30,
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                }}>
+              <Fragment key={data.id}>
+                <TouchableOpacity
+                  key={data.id}
+                  onPress={() =>
+                    navigation.navigate('details', {
+                      id: data.id,
+                      date: selectedDay,
+                    })
+                  }
+                  style={{
+                    paddingLeft: 26,
+                    paddingRight: 26,
+                    // paddingTop: 30,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                  }}>
+                  <View
+                    style={{
+                      borderLeftColor:
+                        data.setName !== 'none' ? '#FF7800' : 'transparent',
+                      borderLeftWidth: 3,
+                      borderRightColor:
+                        data.setName !== 'none' ? '#FF7800' : 'transparent',
+                      borderRightWidth: 3,
+                      // backgroundColor: 'red',
+                      // marginTop: 30,
+                      alignSelf: 'stretch',
+
+                      ...(isFirst
+                        ? {
+                            borderTopLeftRadius: 40,
+                            borderTopRightRadius: 40,
+                            borderTopWidth: 3,
+                            borderTopColor: '#FF7800',
+                          }
+                        : {}),
+
+                      ...(isLast
+                        ? {
+                            borderBottomLeftRadius: 40,
+                            borderBottomRightRadius: 40,
+                            borderBottomWidth: 3,
+                            borderBottomColor: '#FF7800',
+                          }
+                        : {}),
+                    }}>
+                    <View
+                      style={{
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        flexDirection: 'row',
+                        // marginRight: 20,
+                        // marginLeft: 20,
+                        borderRadius: 22,
+                        width: 45,
+                        height: 45,
+                        borderWidth: 2,
+                        borderColor: '#fff',
+                        backgroundColor: '#2B2B2B',
+                      }}>
+                      {icon}
+                    </View>
+                  </View>
+                  <View
+                    style={{
+                      flex: 1,
+                      paddingLeft: 5,
+                      // paddingBottom: 30,
+                      marginBottom: isLast ? 0 : 20,
+                    }}>
+                    <View
+                      style={{
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        flexDirection: 'row',
+                      }}>
+                      <Text style={{fontSize: 15}}>{data.title}</Text>
+                    </View>
+                    <View
+                      style={{
+                        // height: 50,
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        flexDirection: 'row',
+                      }}>
+                      {data.exerciseType === 'warm-up' ? (
+                        <Text style={{fontSize: 10, color: '#333333'}}>
+                          {data.description}
+                        </Text>
+                      ) : (
+                        <Text style={{fontSize: 10, color: '#333333'}}>
+                          {data.sets} x{' '}
+                          {data.type === 'reps' ? data.reps : data.time}
+                        </Text>
+                      )}
+                    </View>
+                  </View>
+                </TouchableOpacity>
                 <View
                   style={{
+                    marginLeft: 26,
+                    width: 51,
                     borderLeftColor:
-                      data.setName !== 'none' ? '#FF7800' : 'transparent',
+                      data.setName !== 'none' && !isLast
+                        ? '#FF7800'
+                        : 'transparent',
                     borderLeftWidth: 3,
                     borderRightColor:
-                      data.setName !== 'none' ? '#FF7800' : 'transparent',
+                      data.setName !== 'none' && !isLast
+                        ? '#FF7800'
+                        : 'transparent',
                     borderRightWidth: 3,
-                    // backgroundColor: 'red',
-                    // marginTop: 30,
-                    alignSelf: 'stretch',
-
-                    ...(isFirst
-                      ? {
-                          borderTopLeftRadius: 40,
-                          borderTopRightRadius: 40,
-                          borderTopWidth: 3,
-                          borderTopColor: '#FF7800',
-                        }
-                      : {}),
-
-                    ...(isLast
-                      ? {
-                          borderBottomLeftRadius: 40,
-                          borderBottomRightRadius: 40,
-                          borderBottomWidth: 3,
-                          borderBottomColor: '#FF7800',
-                        }
-                      : {}),
-                  }}>
-                  <View
-                    style={{
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      flexDirection: 'row',
-                      // marginRight: 20,
-                      // marginLeft: 20,
-                      borderRadius: 22,
-                      width: 45,
-                      height: 45,
-                      borderWidth: 2,
-                      borderColor: '#fff',
-                      backgroundColor: '#2B2B2B',
-                    }}>
-                    {icon}
-                    {/*data.setName !== 'none' ? (
-                      <Text
-                        style={{
-                          fontSize: 20,
-                          lineHeight: 20,
-                          color: 'red',
-                          backgroundColor: '#ccc',
-                          width: 20,
-                          height: 20,
-                          textAlign: 'center',
-                          position: 'absolute',
-                          bottom: -10,
-                          right: -10,
-                        }}>
-                        {data.setName}
-                      </Text>
-                    ) : null*/}
-                  </View>
-                </View>
-                <View
-                  style={{
-                    flex: 1,
-                    paddingLeft: 5,
-                    // paddingBottom: 30,
-                    marginBottom: isLast ? 0 : 20,
-                  }}>
-                  <View
-                    style={{
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                      flexDirection: 'row',
-                    }}>
-                    <Text style={{fontSize: 15}}>{data.title}</Text>
-                  </View>
-                  <View
-                    style={{
-                      // height: 50,
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                      flexDirection: 'row',
-                    }}>
-                    {data.exerciseType === 'warm-up' ? (
-                      <Text style={{fontSize: 10, color: '#333333'}}>
-                        {data.description}
-                      </Text>
-                    ) : (
-                      <Text style={{fontSize: 10, color: '#333333'}}>
-                        {data.sets} x{' '}
-                        {data.type === 'reps' ? data.reps : data.time}
-                      </Text>
-                    )}
-                  </View>
-                </View>
-              </TouchableOpacity>
+                    height: 20,
+                  }}
+                />
+              </Fragment>
             );
           });
 
           return (
             <View style={{flex: 1, backgroundColor: '#F5F5F5'}}>
-              <ScrollView style={{flex: 1, paddingTop: 30}}>{items}</ScrollView>
+              <ScrollView
+                style={{
+                  flex: 1,
+                }}>
+                <View
+                  style={{
+                    flex: 1,
+                    paddingTop: 30,
+                  }}>
+                  {items}
+                </View>
+              </ScrollView>
               <View
                 style={{
                   backgroundColor: '#FF7800',
@@ -319,21 +326,6 @@ const ListWorkouts = ({navigation, workouts, ...props}) => {
             </View>
           );
         }}
-        // Specify what should be rendered instead of ActivityIndicator
-        // renderEmptyData={() => {
-        //   return (
-        //     <View
-        //       style={{
-        //         backgroundColor: 'green',
-        //         flex: 1,
-        //         alignItems: 'center',
-        //         justifyContent: 'center',
-        //       }}>
-        //       <Text>нет тренеровки</Text>
-        //     </View>
-        //   );
-        // }}
-        // Specify your item comparison function for increased performance
         rowHasChanged={(r1, r2) => {
           return r1.text !== r2.text;
         }}
@@ -384,7 +376,11 @@ const ListWorkouts = ({navigation, workouts, ...props}) => {
           agendaDayTextColor: '#fff',
           agendaDayNumColor: '#fff',
           dotColor: '#FF7800',
-          agendaTodayColor: '#FF7800',
+          // agendaTodayColor: '#FF7800',
+          monthTextColor: '#D9D9D9',
+          agendaTodayColor: 'red',
+          // todayBackgroundColor: 'green',
+          todayTextColor: '#fff',
         }}
         // Agenda container style
         style={

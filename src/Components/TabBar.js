@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {View, Text, TouchableOpacity, ScrollView} from 'react-native';
+import {View, Text, TouchableOpacity, ScrollView, Keyboard} from 'react-native';
 
 import Icon from 'react-native-vector-icons/AntDesign';
 
@@ -35,12 +35,21 @@ function TabBar({state, descriptors, navigation}) {
           });
         };
 
-        //dumbbell
-        {
-          /* name="caretright"
-                  size={30}
-                  color="#fff"*/
-        }
+        const [keyboardIsVisible, setKeyboardIsVisible] = React.useState(false);
+
+        React.useEffect(() => {
+          const showListener = Keyboard.addListener('keyboardWillShow', () => {
+            setKeyboardIsVisible(true);
+          });
+          const hideListener = Keyboard.addListener('keyboardWillHide', () => {
+            setKeyboardIsVisible(false);
+          });
+
+          return () => {
+            showListener.remove();
+            hideListener.remove();
+          };
+        }, []);
 
         return (
           <TouchableOpacity
@@ -59,6 +68,7 @@ function TabBar({state, descriptors, navigation}) {
               borderTopWidth: 1,
               borderTopColor: '#9F9D9D',
               backgroundColor: '#2B2B2B',
+              display: keyboardIsVisible ? 'none' : 'flex',
             }}>
             {options.icon && (
               <Icon

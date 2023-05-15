@@ -8,6 +8,9 @@ import {
   TextInput,
 } from 'react-native';
 
+import MaterialCommunityIconsIcon from 'react-native-vector-icons/MaterialCommunityIcons';
+import Icon from 'react-native-vector-icons/AntDesign';
+
 import {Button} from '../Components';
 
 import {findCode, createUser} from '../redux/main';
@@ -60,7 +63,26 @@ const LoginByCodeScreen = ({navigation}) => {
   };
 
   return (
-    <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+    <View
+      style={{
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}>
+      <Icon
+        name="left"
+        style={{
+          color: '#2B2B2B',
+          position: 'absolute',
+          top: 60,
+          left: 20,
+          // backgroundColor: 'red',
+        }}
+        size={30}
+        onPress={() => {
+          navigation.goBack();
+        }}
+      />
       <View style={{width: '70%', paddingBottom: 15}}>
         <TextInput
           style={{

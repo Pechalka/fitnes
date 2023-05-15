@@ -56,6 +56,8 @@ const AuthData = ({navigation}) => {
               label="Обновить"
               style={{
                 margin: 20,
+                marginLeft: 30,
+                marginRight: 30,
                 justifyContent: 'center',
                 alignItems: 'center',
               }}
@@ -69,6 +71,8 @@ const AuthData = ({navigation}) => {
         label="Выход"
         style={{
           margin: 20,
+          marginLeft: 30,
+          marginRight: 30,
           justifyContent: 'center',
           alignItems: 'center',
           marginTop: 'auto',

@@ -25,8 +25,18 @@ const WorkoutStack = createStackNavigator();
 import {Calendar, CalendarList, Agenda} from 'react-native-calendars';
 
 const ProfileStack = createStackNavigator();
+import {useNavigation, useRoute} from '@react-navigation/native';
 
-const StatisticScreen = () => {
+const StatisticScreen = ({navigation, route}) => {
+  // const {
+  //   params: {id, date},
+  // } = route;
+
+  // const handelBack = () => {
+  //   alert(date + ' ' + id);
+  //   // navigation.goBack();
+  // };
+
   return (
     <ProfileStack.Navigator initialRouteName="statistic-list">
       <ProfileStack.Screen
@@ -36,6 +46,7 @@ const StatisticScreen = () => {
           title: 'Статистика',
           headerBackVisible: false,
           headerLeft: () => null,
+          headerShown: false,
         }}
       />
       <ProfileStack.Screen
@@ -43,11 +54,24 @@ const StatisticScreen = () => {
         component={StatisticDataDetails}
         options={{
           title: '??',
-          // headerBackVisible: false,
+          headerBackVisible: false,
           // headerLeft: () => null,
-          headerLeft: (props) => {
-            return <HeaderBackButton {...props} labelVisible={false} />;
-          },
+          // headerLeft: (props) => {
+          //   return (
+          //     <HeaderBackButton
+          //       {...props}
+          //       onPress={() => {
+          //         // const route = useRoute();
+          //         // alert(route.params.id);
+
+          //         console.log('props ', props);
+
+          //         props.onPress();
+          //       }}
+          //       labelVisible={false}
+          //     />
+          //   );
+          // },
         }}
       />
     </ProfileStack.Navigator>
@@ -75,12 +99,13 @@ const WorkoutsScreen = ({navigation}) => {
           icon: 'contacts',
           headerLeft: () => null,
           headerBackVisible: false,
+          headerShown: false,
         }}
       />
       <Tab.Screen
         name="statistic"
         component={StatisticScreen}
-        options={{title: 'Статистика', icon: 'linechart', headerShown: true}}
+        options={{title: 'Статистика', icon: 'linechart', headerShown: false}}
       />
     </Tab.Navigator>
   );

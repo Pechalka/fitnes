@@ -1,4 +1,5 @@
 import http from '../http';
+import {debounce} from 'lodash';
 
 const initState = {
   isLoading: false,
@@ -91,7 +92,7 @@ export const reducer = (state = initState, action) => {
             ...state.exercises[id],
             [item.set]: {
               ...state.exercises[id][item.set],
-              id,
+              id: item.id,
             },
           },
         },
@@ -199,24 +200,26 @@ export const loadResults = (exercises, date) => (dispatch, getState) => {
   // });
 };
 
-export const updateResult = (item, id) => (dispatch, getState) => {
+//debounce
+
+// const debouncedUpdateResult = (UserId, date, item, ExerciseId, dispatch) =>
+//   debounce((UserId, date, item, ExerciseId, dispatch) => {
+//     http.put('/api/userResult/' + item.id, {
+//       reps: +item.reps,
+//       weight: +item.weight,
+//       time: +item.time,
+//       ExerciseId: +item.ExerciseId,
+//       UserId,
+//       date,
+//     });
+//   }, 200);
+
+export const updateResult = (item, ExerciseId) => (dispatch, getState) => {
   const state = getState();
   const {date} = state.setsReducer;
   const UserId = getUser(state).id;
 
-  console.log('item ', item);
-  console.log('id ', id);
-
-  console.log('>> ', {
-    set: item.set,
-    reps: +item.reps,
-    weight: +item.weight,
-    time: +item.time,
-    type: item.type,
-    date,
-    ExerciseId: +id,
-    UserId,
-  });
+  console.log('START', item);
 
   if (!item.id) {
     http
@@ -231,20 +234,32 @@ export const updateResult = (item, id) => (dispatch, getState) => {
         UserId,
       })
       .then((newItem) => {
+        console.log('END CREATE', newItem);
         dispatch({
           type: 'UPDATE_RESULT',
-          payload: {item: newItem, id},
+          payload: {item: newItem, id: ExerciseId},
         });
       });
   } else {
-    http.put('/api/userResult/' + item.id, {
-      reps: +item.reps,
-      weight: +item.weight,
-      time: +item.time,
-      ExerciseId: +item.ExerciseId,
-      UserId,
-      date,
-    });
+    // debouncedUpdateResult(UserId, date, item, ExerciseId, dispatch);
+    http
+      .put('/api/userResult/' + item.id, {
+        reps: +item.reps,
+        weight: +item.weight,
+        time: +item.time,
+        ExerciseId: +item.ExerciseId,
+        UserId,
+        date,
+      })
+      .then((newItem) => {
+        console.log('END UPDATE', item.id, newItem, item);
+      });
+    // .then((newItem) => {
+    //   dispatch({
+    //     type: 'UPDATE_RESULT',
+    //     payload: {item: newItem, id: newItem.id},
+    //   });
+    // });
   }
 };
 

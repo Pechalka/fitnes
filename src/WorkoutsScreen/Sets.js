@@ -30,7 +30,7 @@ import {
 import {useActions} from '../hooks';
 import {useSelector} from 'react-redux';
 
-const Sets = ({exercise, onLayout}) => {
+const Sets = ({exercise, onLayout, isActive}) => {
   const actions = useActions(
     {updateResult, updateReps, updateWeight, updateTime},
     [],
@@ -40,6 +40,10 @@ const Sets = ({exercise, onLayout}) => {
 
   const sets = exercises['' + exercise.id] || {};
 
+  if (isLoading) {
+    return null;
+  }
+
   if (exercise.exerciseType === 'warm-up') {
     return (
       <View style={{flex: 1, margin: 20}}>
@@ -48,16 +52,12 @@ const Sets = ({exercise, onLayout}) => {
     );
   }
 
-  if (isLoading) {
-    return null;
-  }
-
   return (
     <View onLayout={onLayout}>
       <View style={styles.titleContainer}>
         <Text style={styles.titleText}>{exercise.title}</Text>
       </View>
-      <View style={styles.container}>
+      <View style={isActive ? styles.containerActive : styles.container}>
         {exercise.temp ? (
           <Text style={styles.tempLabel}>Темп: {exercise.temp}</Text>
         ) : null}
@@ -161,6 +161,17 @@ const styles = StyleSheet.create({
   },
 
   container: {
+    backgroundColor: '#FBFBFB',
+    borderWidth: 1,
+    borderColor: '#FBFBFB',
+    padding: 20,
+    marginBottom: 0,
+    marginLeft: 15,
+    marginRight: 15,
+    borderRadius: 10,
+  },
+
+  containerActive: {
     backgroundColor: '#FBFBFB',
     borderWidth: 1,
     borderColor: '#FF7800',

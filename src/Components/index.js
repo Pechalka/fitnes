@@ -61,6 +61,8 @@ export const TextField = ({name, defaultValue = '', validate, label}) => {
           <View
             style={{
               margin: 20,
+              marginRight: 30,
+              marginLeft: 30,
               marginBottom: 0,
             }}>
             <TextInput
@@ -106,7 +108,7 @@ export const Tab = ({label, onPress, isActive}) => (
     onPress={() => onPress()}>
     <Text
       style={{
-        fontSize: 15,
+        fontSize: 24,
       }}>
       {label}
     </Text>
@@ -116,9 +118,11 @@ export const Tab = ({label, onPress, isActive}) => (
 export const Tabs = ({children}) => (
   <View
     style={{
-      margin: 20,
+      // margin: 30,
+      marginLeft: 30,
+      marginRight: 30,
       flexDirection: 'row',
-      justifyContent: 'space-around',
+      justifyContent: 'space-between',
     }}>
     {children}
   </View>

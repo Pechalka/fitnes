@@ -11,6 +11,7 @@ import {
   ScrollView,
   TextInput,
   TouchableOpacity,
+  Keyboard,
 } from 'react-native';
 import YouTube from 'react-native-youtube';
 
@@ -31,7 +32,7 @@ import {useSelector} from 'react-redux';
 
 import {useNavigation, useRoute} from '@react-navigation/native';
 
-const Navigation = () => {
+const Navigation = ({exerciseId}) => {
   const navigation = useNavigation();
   const route = useRoute();
 
@@ -47,10 +48,6 @@ const Navigation = () => {
     return exercise.id === exercises[0].id;
   }, [exercise, exercises]);
 
-  const disabledNextDisabled = useMemo(() => {
-    return exercise.id === exercises[exercises.length - 1].id;
-  }, [exercise, exercises]);
-
   const preventExercisesId = useMemo(() => {
     for (let n = 0; n < exercises.length; n++) {
       if (n - 1 >= 0 && exercises[n].id === exercise.id) {
@@ -59,6 +56,10 @@ const Navigation = () => {
     }
 
     return -1;
+  }, [exercise, exercises]);
+
+  const disabledNextDisabled = useMemo(() => {
+    return exercise.id === exercises[exercises.length - 1].id;
   }, [exercise, exercises]);
 
   const nextExercisesId = useMemo(() => {
@@ -70,6 +71,34 @@ const Navigation = () => {
 
     return -1;
   }, [exercise, exercises]);
+
+  const [keyboardIsVisible, setKeyboardIsVisible] = useState(false);
+
+  const statistiId = useMemo(() => {
+    const ex = exercises.find((x) => x.id === +exerciseId);
+    if (ex) {
+      return ex.ExerciseId;
+    }
+    return null;
+  }, [exercises, exerciseId]);
+
+  useEffect(() => {
+    const showListener = Keyboard.addListener('keyboardWillShow', () => {
+      setKeyboardIsVisible(true);
+    });
+    const hideListener = Keyboard.addListener('keyboardWillHide', () => {
+      setKeyboardIsVisible(false);
+    });
+
+    return () => {
+      showListener.remove();
+      hideListener.remove();
+    };
+  }, []);
+
+  if (keyboardIsVisible) {
+    return null;
+  }
 
   return (
     <View
@@ -83,7 +112,7 @@ const Navigation = () => {
         name="arrowleft"
         size={30}
         style={{margin: 20}}
-        color={disabledPrevDisabled ? '#ccc' : '#000'}
+        color={disabledPrevDisabled ? '#000' : '#9F9D9D'}
         onPress={() => {
           if (disabledPrevDisabled) {
             return;
@@ -98,7 +127,7 @@ const Navigation = () => {
       <Icon
         name="close"
         size={30}
-        style={{margin: 20}}
+        style={{margin: 20, color: '#9F9D9D'}}
         onPress={() => {
           navigation.navigate('list');
         }}
@@ -107,7 +136,7 @@ const Navigation = () => {
         name="arrowright"
         size={30}
         style={{margin: 20}}
-        color={disabledNextDisabled ? '#ccc' : '#000'}
+        color={disabledNextDisabled ? '#000' : '#9F9D9D'}
         onPress={() => {
           if (disabledNextDisabled) {
             return;
@@ -119,16 +148,32 @@ const Navigation = () => {
           });
         }}
       />
-      <MaterialCommunityIconsIcon
-        name="clock"
-        size={30}
-        style={{margin: 20, position: 'absolute', right: 20}}
-        onPress={() => {
-          navigation.navigate('statistic-details', {
-            id: exercise.ExerciseId,
-          });
-        }}
-      />
+      {statistiId && (
+        <MaterialCommunityIconsIcon
+          name="clock"
+          size={30}
+          style={{
+            margin: 20,
+            position: 'absolute',
+            right: 20,
+            color: '#9F9D9D',
+          }}
+          onPress={() => {
+            // navigation.navigate('statistic', {
+            //   screen: 'statistic-details',
+            //   params: {
+            //     id: exercise.ExerciseId,
+            //     date: date,
+            //   },
+            // });
+            // alert(exercise.ExerciseId);
+            navigation.navigate('statistic-details2', {
+              id: statistiId,
+              date: date,
+            });
+          }}
+        />
+      )}
     </View>
   );
 };

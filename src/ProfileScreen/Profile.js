@@ -10,7 +10,7 @@ const ProfileScreen = ({navigation}) => {
   const [tab, setTab] = useState('profile');
 
   return (
-    <View style={{flex: 1}}>
+    <View style={{flex: 1, marginTop: 60}}>
       <Tabs>
         <Tab
           label="Пользователь"
