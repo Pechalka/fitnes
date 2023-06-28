@@ -1,0 +1,2 @@
+
+npx yarn bundle:ios

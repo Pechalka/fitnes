@@ -4,9 +4,10 @@
   "private": true,
   "scripts": {
     "android": "react-native run-android",
-    "ios": "react-native run-ios",
+    "ios": "react-native run-ios --simulator='iPhone 14'",
     "start": "react-native start",
     "test": "jest",
+    "bundle:ios": "node ./node_modules/react-native/local-cli/cli.js bundle --platform ios --entry-file index.js --bundle-output ios//main.jsbundle --dev=false --verbose",
     "lint": "eslint ."
   },
   "dependencies": {
@@ -18,7 +19,7 @@
     "moment": "2.29.4",
     "react": "16.13.1",
     "react-final-form": "6.5.9",
-    "react-native": "0.63.2",
+    "react-native": "^0.63.3",
     "react-native-calendars": "1.1293.0",
     "react-native-device-info": "10.3.0",
     "react-native-gesture-handler": "1.8.0",
